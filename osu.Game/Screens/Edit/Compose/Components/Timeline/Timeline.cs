@@ -80,6 +80,7 @@ namespace osu.Game.Screens.Edit.Compose.Components.Timeline
         }
 
         private WaveformGraph waveform;
+        private Box bottomLine;
 
         private TimelineTickDisplay ticks;
 
@@ -101,6 +102,8 @@ namespace osu.Game.Screens.Edit.Compose.Components.Timeline
             // We don't want the centre marker to scroll
             AddInternal(centreMarker = new CentreMarker());
 
+            mainContent = config.GetBindable<bool>(OsuSetting.EditorTimeline).Value ? drawLegacyTimeline(colours, centreMarker) : drawTimeline(colours, centreMarker);
+
             AddRange(new Drawable[]
             {
                 controlPoints = new TimelineControlPointDisplay
@@ -108,34 +111,7 @@ namespace osu.Game.Screens.Edit.Compose.Components.Timeline
                     RelativeSizeAxes = Axes.X,
                     Height = timeline_expanded_height,
                 },
-                mainContent = new Container
-                {
-                    RelativeSizeAxes = Axes.X,
-                    Height = timeline_height,
-                    Depth = float.MaxValue,
-                    Children = new[]
-                    {
-                        waveform = new WaveformGraph
-                        {
-                            RelativeSizeAxes = Axes.Both,
-                            BaseColour = colours.Blue.Opacity(0.2f),
-                            LowColour = colours.BlueLighter,
-                            MidColour = colours.BlueDark,
-                            HighColour = colours.BlueDarker,
-                        },
-                        centreMarker.CreateProxy(),
-                        ticks = new TimelineTickDisplay(),
-                        new Box
-                        {
-                            Name = "zero marker",
-                            RelativeSizeAxes = Axes.Y,
-                            Width = 2,
-                            Origin = Anchor.TopCentre,
-                            Colour = colours.YellowDarker,
-                        },
-                        userContent,
-                    }
-                },
+                mainContent
             });
 
             waveformOpacity = config.GetBindable<float>(OsuSetting.EditorWaveformOpacity);
@@ -318,6 +294,80 @@ namespace osu.Game.Screens.Edit.Compose.Components.Timeline
         {
             double time = TimeAtPosition(Content.ToLocalSpace(screenSpacePosition).X);
             return new SnapResult(screenSpacePosition, beatSnapProvider.SnapTime(time));
+        }
+
+        // legacy timeline
+        private Container drawLegacyTimeline(OsuColour colours, CentreMarker centreMarker)
+        {
+            return new Container
+            {
+                RelativeSizeAxes = Axes.X,
+                Height = timeline_height,
+                Depth = float.MaxValue,
+                Children = new[]
+                {
+                    waveform = new WaveformGraph
+                    {
+                        RelativeSizeAxes = Axes.Both,
+                        BaseColour = colours.Blue.Opacity(0.2f),
+                        LowColour = colours.BlueLighter,
+                        MidColour = colours.BlueDark,
+                        HighColour = colours.BlueDarker,
+                    },
+                    new Box
+                    {
+                        Name = "zero marker",
+                        RelativeSizeAxes = Axes.Y,
+                        Width = 2,
+                        Origin = Anchor.TopCentre,
+                        Colour = colours.YellowDarker,
+                    },
+                    centreMarker.CreateProxy(),
+                    userContent,
+                    bottomLine = new Box
+                    {
+                        Height = 1,
+                        Colour = osuTK.Graphics.Color4.White,
+                        RelativeSizeAxes = Axes.X,
+                        RelativePositionAxes = Axes.Y,
+                        Y = -0.25f,
+                        Anchor = Anchor.BottomLeft
+                    },
+                    ticks = new TimelineTickDisplay(true), // TODO: configure legacy view
+                }
+            };
+        }
+
+        private Container drawTimeline(OsuColour colours, CentreMarker centreMarker)
+        {
+            return new Container
+            {
+                RelativeSizeAxes = Axes.X,
+                Height = timeline_height,
+                Depth = float.MaxValue,
+                Children = new[]
+                {
+                    waveform = new WaveformGraph
+                    {
+                        RelativeSizeAxes = Axes.Both,
+                        BaseColour = colours.Blue.Opacity(0.2f),
+                        LowColour = colours.BlueLighter,
+                        MidColour = colours.BlueDark,
+                        HighColour = colours.BlueDarker,
+                    },
+                    centreMarker.CreateProxy(),
+                    ticks = new TimelineTickDisplay(false),
+                    new Box
+                    {
+                        Name = "zero marker",
+                        RelativeSizeAxes = Axes.Y,
+                        Width = 2,
+                        Origin = Anchor.TopCentre,
+                        Colour = colours.YellowDarker,
+                    },
+                    userContent,
+                }
+            };
         }
     }
 }

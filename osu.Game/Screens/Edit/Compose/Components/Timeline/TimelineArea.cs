@@ -8,6 +8,7 @@ using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Shapes;
 using osu.Framework.Graphics.Sprites;
+using osu.Game.Configuration;
 using osu.Game.Graphics.UserInterface;
 using osu.Game.Localisation;
 using osu.Game.Overlays;
@@ -31,7 +32,7 @@ namespace osu.Game.Screens.Edit.Compose.Components.Timeline
         }
 
         [BackgroundDependencyLoader]
-        private void load(OverlayColourProvider colourProvider)
+        private void load(OverlayColourProvider colourProvider, OsuConfigManager config)
         {
             Masking = true;
 
@@ -78,7 +79,7 @@ namespace osu.Game.Screens.Edit.Compose.Components.Timeline
                                             waveformCheckbox = new OsuCheckbox
                                             {
                                                 LabelText = EditorStrings.TimelineWaveform,
-                                                Current = { Value = true },
+                                                Current = config.GetBindable<bool>(OsuSetting.EditorWaveform),
                                             },
                                             ticksCheckbox = new OsuCheckbox
                                             {

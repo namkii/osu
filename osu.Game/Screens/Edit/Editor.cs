@@ -184,6 +184,7 @@ namespace osu.Game.Screens.Edit
         private OnScreenDisplay onScreenDisplay { get; set; }
 
         private Bindable<float> editorBackgroundDim;
+        private Bindable<bool> editorShowMouse;
         private Bindable<bool> editorHitMarkers;
         private Bindable<bool> editorAutoSeekOnPlacement;
 
@@ -272,6 +273,7 @@ namespace osu.Game.Screens.Edit
             OsuMenuItem redoMenuItem;
 
             editorBackgroundDim = config.GetBindable<float>(OsuSetting.EditorDim);
+            editorShowMouse = config.GetBindable<bool>(OsuSetting.EditorMouse);
             editorHitMarkers = config.GetBindable<bool>(OsuSetting.EditorShowHitMarkers);
             editorAutoSeekOnPlacement = config.GetBindable<bool>(OsuSetting.EditorAutoSeekOnPlacement);
 

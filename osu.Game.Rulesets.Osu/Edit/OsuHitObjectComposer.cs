@@ -115,6 +115,7 @@ namespace osu.Game.Rulesets.Osu.Edit
 
             if (!(BlueprintContainer.CurrentTool is SelectTool))
             {
+
                 if (EditorClock.CurrentTime != lastDistanceSnapGridTime)
                 {
                     distanceSnapGridCache.Invalidate();
@@ -123,6 +124,10 @@ namespace osu.Game.Rulesets.Osu.Edit
 
                 if (!distanceSnapGridCache.IsValid)
                     updateDistanceSnapGrid();
+            }
+            else
+            {
+
             }
         }
 

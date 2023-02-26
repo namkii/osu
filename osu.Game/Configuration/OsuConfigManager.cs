@@ -176,6 +176,10 @@ namespace osu.Game.Configuration
             SetDefault(OsuSetting.DiscordRichPresence, DiscordRichPresenceMode.Full);
 
             SetDefault(OsuSetting.EditorDim, 0.25f, 0f, 0.75f, 0.25f);
+            SetDefault(OsuSetting.EditorMouse, false);
+            SetDefault(OsuSetting.EditorTimeline, false);
+            SetDefault(OsuSetting.EditorWaveform, true);
+
             SetDefault(OsuSetting.EditorWaveformOpacity, 0.25f, 0f, 1f, 0.25f);
             SetDefault(OsuSetting.EditorShowHitMarkers, true);
             SetDefault(OsuSetting.EditorAutoSeekOnPlacement, true);
@@ -301,6 +305,9 @@ namespace osu.Game.Configuration
         DimLevel,
         BlurLevel,
         EditorDim,
+        EditorMouse,
+        EditorTimeline,
+        EditorWaveform,
         LightenDuringBreaks,
         ShowStoryboard,
         KeyOverlay,

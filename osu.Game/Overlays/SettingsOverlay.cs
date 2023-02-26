@@ -36,6 +36,7 @@ namespace osu.Game.Overlays
             new GraphicsSection(),
             new OnlineSection(),
             new MaintenanceSection(),
+            new EditorSection(),
             new DebugSection(),
         };
 

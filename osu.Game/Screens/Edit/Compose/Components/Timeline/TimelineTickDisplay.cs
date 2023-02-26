@@ -35,8 +35,11 @@ namespace osu.Game.Screens.Edit.Compose.Components.Timeline
         [Resolved]
         private OsuColour colours { get; set; }
 
-        public TimelineTickDisplay()
+        private readonly bool legacyTicks;
+
+        public TimelineTickDisplay(bool legacyTicks)
         {
+            this.legacyTicks = legacyTicks;
             RelativeSizeAxes = Axes.Both;
         }
 
@@ -105,25 +108,25 @@ namespace osu.Game.Screens.Edit.Compose.Components.Timeline
             nextMinTick = null;
             nextMaxTick = null;
 
-            for (int i = 0; i < beatmap.ControlPointInfo.TimingPoints.Count; i++)
+            for (int timingPointIndex = 0; timingPointIndex < beatmap.ControlPointInfo.TimingPoints.Count; timingPointIndex++)
             {
-                var point = beatmap.ControlPointInfo.TimingPoints[i];
-                double until = i + 1 < beatmap.ControlPointInfo.TimingPoints.Count ? beatmap.ControlPointInfo.TimingPoints[i + 1].Time : working.Value.Track.Length;
+                var point = beatmap.ControlPointInfo.TimingPoints[timingPointIndex];
+                double until = timingPointIndex + 1 < beatmap.ControlPointInfo.TimingPoints.Count ? beatmap.ControlPointInfo.TimingPoints[timingPointIndex + 1].Time : working.Value.Track.Length;
 
                 int beat = 0;
 
-                for (double t = point.Time; t < until; t += point.BeatLength / beatDivisor.Value)
+                for (double time = point.Time; time < until; time += point.BeatLength / beatDivisor.Value)
                 {
-                    float xPos = (float)t;
+                    float xPos = (float)time;
 
-                    if (t < visibleRange.min)
+                    if (time < visibleRange.min)
                         nextMinTick = xPos;
-                    else if (t > visibleRange.max)
+                    else if (time > visibleRange.max)
                         nextMaxTick ??= xPos;
                     else
                     {
                         // if this is the first beat in the beatmap, there is no next min tick
-                        if (beat == 0 && i == 0)
+                        if (beat == 0 && timingPointIndex == 0)
                             nextMinTick = float.MinValue;
 
                         int indexInBar = beat % (point.TimeSignature.Numerator * beatDivisor.Value);
@@ -140,8 +143,28 @@ namespace osu.Game.Screens.Edit.Compose.Components.Timeline
 
                         var line = getNextUsableLine();
                         line.X = xPos;
+
                         line.Width = PointVisualisation.MAX_WIDTH * size.X;
-                        line.Height = 0.9f * size.Y;
+
+                        if (legacyTicks)
+                        {
+                            if (indexInBar == 0)
+                            {
+                                line.Height = 0.25f * size.Y;
+                                line.Y = 0.15f;
+                                line.Width = PointVisualisation.MAX_WIDTH * 0.9f;
+                            }
+                            else
+                            {
+                                line.Height = 0.15f * size.Y;
+                                line.Y = 0.2f;
+                            }
+                        }
+                        else
+                        {
+                            line.Height = 0.9f * size.Y;
+                        }
+
                         line.Colour = colour;
                     }
 
